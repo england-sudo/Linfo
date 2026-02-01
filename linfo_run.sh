@@ -8,7 +8,7 @@ LAUNCHER="${INSTALL_DIR}/linfo_launcher.sh"
 LINFO_NO_LAUNCH=1 python3 "${SCRIPT_DIR}/install.py"
 
 if [[ -x "${LAUNCHER}" ]]; then
-  exec "${LAUNCHER}"
+  exec "${LAUNCHER}" "$@"
 fi
 
 echo "Launcher not found at ${LAUNCHER}. Installation may have failed." >&2
