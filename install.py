@@ -225,6 +225,7 @@ def ensure_executables():
     paths_to_fix = [
         os.path.abspath("hwtop.py"),
         os.path.abspath("linfo_launcher.sh"),
+        os.path.abspath("linfo_run.sh"),
         os.path.abspath(__file__),  # Optional: make install.py executable too
     ]
 

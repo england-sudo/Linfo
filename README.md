@@ -45,7 +45,12 @@ Run the application:
 python3 hwtop.py
 ```
 
-Or use the `.desktop` launcher from your app menu once installed by searching for "linfo".
+Or use the convenience launcher (installs if needed, then runs):
+```bash
+./linfo_run.sh
+```
+
+You can also use the `.desktop` launcher from your app menu once installed by searching for "linfo".
 
 **Note:** RAM frequency requires `dmidecode` access. If you want that metric, launch with elevation:
 ```bash
