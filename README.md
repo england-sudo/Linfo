@@ -25,7 +25,7 @@
 
 ## 🚀 Installation
 
-Clone this repo and run `install.py` to create a desktop entry and launch the app:
+Clone this repo and run `install.py` to create a desktop entry, set up a local virtual environment, and launch the app:
 
 ```bash
 git clone https://github.com/meatsack-sudo/linfo.git
@@ -34,10 +34,7 @@ chmod +x install.py
 python3 install.py
 ```
 
-Install.py should handle dependencies but if not, ensure you install everything in requirements.txt:
-```bash
-sudo apt install python3-pyqt6 python3-psutil dmidecode
-```
+`install.py` installs Python dependencies into `~/.local/share/linfo/.venv` and will attempt to install missing system packages (like `dmidecode`) using your distro's package manager when needed.
 
 ---
 
@@ -48,7 +45,17 @@ Run the application:
 python3 hwtop.py
 ```
 
-Or use the `.desktop` launcher from your app menu once installed by searching for "linfo"
+Or use the convenience launcher (installs if needed, then runs):
+```bash
+./linfo_run.sh
+```
+
+You can also use the `.desktop` launcher from your app menu once installed by searching for "linfo".
+
+**Note:** RAM frequency requires `dmidecode` access. If you want that metric, launch with elevation:
+```bash
+LINFO_ELEVATE=1 ~/.local/share/linfo/linfo_launcher.sh
+```
 
 ---
 
@@ -103,4 +110,3 @@ SOFTWARE.
 ## 👨‍💻 Author
 
 Developed by [Alex England](https://github.com/meatsack-sudo)
-

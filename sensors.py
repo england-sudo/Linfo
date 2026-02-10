@@ -1,7 +1,10 @@
-import psutil
-import subprocess
+import os
 import platform
 import re
+import subprocess
+import time
+
+import psutil
 
 
 class sensor:
@@ -45,6 +48,9 @@ class sensor:
             "CPU": self.get_cpu_name(),
             "GPU": self.get_gpu_name(),
         }
+        self._ram_frequency_cache = None
+        self._ram_frequency_last_update = 0
+        self._ram_frequency_refresh_s = 300
 
     def update_stats(self, key, value):
         if value == "Unknown" or value is None:
@@ -121,9 +127,19 @@ class sensor:
         Try to read RAM frequency from 'dmidecode -t 17'. 
         Returns the highest detected frequency or 'Unknown'.
         """
+        now = time.time()
+        if self._ram_frequency_cache is not None and now - self._ram_frequency_last_update < self._ram_frequency_refresh_s:
+            return self._ram_frequency_cache
+
+        if os.geteuid() != 0:
+            return self._ram_frequency_cache or "Unknown"
+
         try:
-            output = subprocess.check_output(["pkexec", "dmidecode", "-t", "17"],
-                                               text=True, stderr=subprocess.STDOUT)
+            output = subprocess.check_output(
+                ["dmidecode", "-t", "17"],
+                text=True,
+                stderr=subprocess.STDOUT,
+            )
             frequencies = []
             for line in output.split("\n"):
                 if "Configured Clock Speed:" in line or "Speed:" in line:
@@ -131,10 +147,15 @@ class sensor:
                     if freq.isdigit():
                         frequencies.append(int(freq))
             if frequencies:
-                return max(frequencies)
-        except:
+                self._ram_frequency_cache = max(frequencies)
+                self._ram_frequency_last_update = now
+                return self._ram_frequency_cache
+        except Exception:
             pass
-        return "Unknown"
+
+        self._ram_frequency_cache = "Unknown"
+        self._ram_frequency_last_update = now
+        return self._ram_frequency_cache
 
     def get_gpu_fan_speed_percent(self):
         """
@@ -356,4 +377,3 @@ class sensor:
         self.update_stats("GPU Throttle Temperature", self.get_gpu_throttle_temperature())
 
         return per_core_freqs
-

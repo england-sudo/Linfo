@@ -35,26 +35,6 @@ class LinfoApp(QMainWindow):
             "RAM": True,
         }
 
-        # If not running as root, re-launch via pkexec
-        if os.geteuid() != 0:
-            print("Requesting root access via pkexec...")
-            binary_path = os.path.abspath(sys.argv[0])
-            env_vars = {
-                "PATH": os.environ.get("PATH", ""),
-                "DISPLAY": os.environ.get("DISPLAY", ""),
-                "XAUTHORITY": os.environ.get("XAUTHORITY", ""),
-                "XDG_RUNTIME_DIR": os.environ.get("XDG_RUNTIME_DIR", ""),
-                "LANG": os.environ.get("LANG", "C.UTF-8"),
-                "LC_ALL": os.environ.get("LC_ALL", "C.UTF-8"),
-            }
-            cmd = ["pkexec", "env"]
-            for k, v in env_vars.items():
-                if v:
-                    cmd.append(f"{k}={v}")
-            cmd.append(binary_path)
-            cmd.extend(sys.argv[1:])
-            os.execvp("pkexec", cmd)
-
         # Initialize hardware sensor backend
         self.system_stats = sensor()
 
